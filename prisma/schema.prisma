@@ -1,0 +1,109 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Bảng Người dùng
+model User {
+  id            String     @id @default(cuid())
+  name          String
+  email         String     @unique
+  password      String
+  // ?(optional)
+  phone         String?    
+  dateOfBirth   DateTime?
+  address       String?
+  role          String     @default("USER")
+  createdAt     DateTime   @default(now())
+  
+  // Các liên kết
+  favorites     Favorite[]
+  reviews       Review[]
+  cart          Cart?
+  orders        Order[]
+}
+
+// Bảng Sản phẩm
+model Product {
+  id            String      @id @default(cuid())
+  name          String
+  description   String
+  price         Float
+  stock         Int
+  isPreorder    Boolean     @default(false)
+  craftingTime  String?
+  createdAt     DateTime    @default(now())
+  
+  favorites     Favorite[]
+  reviews       Review[]
+  cartItems     CartItem[]
+  orderItems    OrderItem[]
+}
+
+// Bảng Yêu thích
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+// Bảng Đánh giá
+model Review {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  rating    Int
+  comment   String
+  createdAt DateTime @default(now())
+}
+
+// Bảng Giỏ hàng
+model Cart {
+  id        String     @id @default(cuid())
+  userId    String     @unique // Quan hệ 1-1
+  user      User       @relation(fields: [userId], references: [id])
+  updatedAt DateTime   @updatedAt
+  cartItems CartItem[]
+}
+
+model CartItem {
+  id         String   @id @default(cuid())
+  cartId     String
+  cart       Cart     @relation(fields: [cartId], references: [id])
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id])
+  quantity   Int
+  customNote String?
+}
+
+// Bảng Đơn hàng
+model Order {
+  id              String      @id @default(cuid())
+  userId          String
+  user            User        @relation(fields: [userId], references: [id])
+  totalAmount     Float
+  status          String      @default("PENDING")
+  shippingAddress String
+  createdAt       DateTime    @default(now())
+  orderItems      OrderItem[]
+}
+
+model OrderItem {
+  id         String   @id @default(cuid())
+  orderId    String
+  order      Order    @relation(fields: [orderId], references: [id])
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id])
+  quantity   Int
+  price      Float
+  customNote String?
+}

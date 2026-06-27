@@ -1,64 +1,187 @@
-import Image from "next/image";
+import React from "react";
+import { Search, ChevronLeft, ChevronRight, Star, ShoppingCart, ArrowRight, Bell, User } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+
+// Chú ý: Đây là component giả lập để mã có thể chạy trên môi trường xem trước (preview) này.
+// Khi sao chép vào dự án Next.js trên máy của bạn, hãy xóa dòng định nghĩa Link bên dưới 
+// và thêm lại dòng: import Link from "next/link"; lên trên cùng nhé.
+const Link = ({ href, children, className, ...props }: any) => {
+  return (
+    <a href={href} className={className} {...props}>
+      {children}
+    </a>
+  );
+};
 
 export default function Home() {
+  const categories = [
+    { name: "Keycap SA", color: "bg-blue-100 text-blue-600" },
+    { name: "Keycap Cherry", color: "bg-red-100 text-red-600" },
+    { name: "Keycap OEM", color: "bg-green-100 text-green-600" },
+    { name: "Keycap DSA", color: "bg-purple-100 text-purple-600" },
+    { name: "Keycap XDA", color: "bg-orange-100 text-orange-600" },
+    { name: "Keycap Custom", color: "bg-slate-200 text-slate-800" },
+  ];
+
+  const products = [
+    { id: 1, name: "Keycap GMK Olivia", price: "2,500,000đ", rating: 4.8, reviews: 156 },
+    { id: 2, name: "Keycap PBT Chalk", price: "850,000đ", rating: 4.5, reviews: 89 },
+    { id: 3, name: "Keycap SA Bliss", price: "1,200,000đ", rating: 4.9, reviews: 210 },
+    { id: 4, name: "Keycap Cherry Blossom", price: "950,000đ", rating: 4.7, reviews: 134 },
+    { id: 5, name: "Keycap Artisan Dragon", price: "450,000đ", rating: 4.2, reviews: 45 },
+    { id: 6, name: "Keycap GMK Striker", price: "2,800,000đ", rating: 5.0, reviews: 320 },
+    { id: 7, name: "Keycap KAT Milkshake", price: "1,100,000đ", rating: 4.6, reviews: 112 },
+    { id: 8, name: "Keycap XDA Canvas", price: "750,000đ", rating: 4.4, reviews: 76 },
+  ];
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen bg-slate-50 font-sans pb-12">
+      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-slate-200 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 h-20 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-4 group">
+            <div className="w-12 h-12 border-2 border-slate-900 flex items-center justify-center font-bold text-slate-900 group-hover:bg-slate-900 group-hover:text-white transition-all duration-300 rounded-lg">
+              LOGO
+            </div>
+            <span className="text-2xl font-black text-slate-900 tracking-tight">Keycap</span>
+          </Link>
+
+          <div className="flex items-center gap-4 sm:gap-6">
+            <Link href="/cart" className="relative p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-full transition-all">
+              <ShoppingCart className="w-6 h-6" />
+              <span className="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white shadow-sm">3</span>
+            </Link>
+
+            <button className="relative p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-full transition-all">
+              <Bell className="w-6 h-6" />
+              <span className="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white shadow-sm">5</span>
+            </button>
+
+            <div className="h-8 w-px bg-slate-200 hidden sm:block mx-1"></div>
+
+            <Link href="/account" className="flex items-center gap-3 p-1.5 hover:bg-slate-100 rounded-2xl transition-all border border-transparent hover:border-slate-200 cursor-pointer">
+              <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 border border-slate-200 shadow-inner">
+                <User className="w-5 h-5" />
+              </div>
+              <div className="hidden sm:block pr-3">
+                <div className="text-sm font-bold text-slate-900 leading-none mb-1">Nguyễn Văn A</div>
+                <div className="text-xs text-slate-500 leading-none">Tài khoản</div>
+              </div>
+            </Link>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </header>
+
+      <main className="max-w-7xl mx-auto px-4 sm:px-8 py-8 space-y-12">
+        <div className="relative max-w-3xl mx-auto group">
+          <Search className="absolute left-4 top-3.5 h-5 w-5 text-slate-400 group-focus-within:text-slate-600 transition-colors" />
+          <Input 
+            type="text" 
+            placeholder="Tìm kiếm sản phẩm..." 
+            className="pl-12 py-6 text-base rounded-2xl shadow-sm border-slate-200 focus-visible:ring-slate-300 bg-white transition-shadow focus-visible:shadow-md"
+          />
         </div>
+
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 h-[320px] flex items-center justify-center shadow-lg group">
+          <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] mix-blend-overlay"></div>
+          
+          <Button variant="outline" size="icon" className="absolute left-6 rounded-full bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity">
+            <ChevronLeft className="w-6 h-6" />
+          </Button>
+
+          <div className="text-center z-10 text-white space-y-4 px-4">
+            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">Banner Khuyến Mãi</h1>
+            <p className="text-slate-300 text-lg max-w-md mx-auto font-medium">Wireframe - 1200 x 300px</p>
+            <Button className="mt-6 bg-white text-slate-900 hover:bg-slate-100 rounded-full px-8 py-6 text-base font-bold transition-transform hover:scale-105 shadow-xl">
+              Khám Phá Ngay
+            </Button>
+          </div>
+
+          <Button variant="outline" size="icon" className="absolute right-6 rounded-full bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity">
+            <ChevronRight className="w-6 h-6" />
+          </Button>
+
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3">
+            <div className="w-8 h-2 rounded-full bg-white shadow-sm"></div>
+            <div className="w-2 h-2 rounded-full bg-white/40 cursor-pointer hover:bg-white/70 transition-colors"></div>
+            <div className="w-2 h-2 rounded-full bg-white/40 cursor-pointer hover:bg-white/70 transition-colors"></div>
+            <div className="w-2 h-2 rounded-full bg-white/40 cursor-pointer hover:bg-white/70 transition-colors"></div>
+            <div className="w-2 h-2 rounded-full bg-white/40 cursor-pointer hover:bg-white/70 transition-colors"></div>
+          </div>
+        </div>
+
+        <div>
+          <div className="flex items-end justify-between mb-6">
+            <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Sản Phẩm Yêu Thích</h2>
+            <Link href="/product" className="text-sm font-semibold text-blue-600 hover:text-blue-700 flex items-center group">
+              Xem thêm <ArrowRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </div>
+          
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+            {categories.map((category) => (
+              <Card key={category.name} className="group cursor-pointer border-slate-200 hover:border-slate-300 transition-all duration-300 hover:shadow-md bg-white overflow-hidden">
+                <CardContent className="p-6 flex flex-col items-center justify-center text-center gap-4">
+                  <div className={`w-16 h-16 rounded-2xl ${category.color} flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-sm`}>
+                    <span className="font-bold text-xl">{category.name.charAt(7)}</span>
+                  </div>
+                  <span className="font-semibold text-sm text-slate-700 group-hover:text-slate-900">{category.name}</span>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <div className="flex items-end justify-between mb-6">
+            <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Sản Phẩm Mới Nhất</h2>
+            <Link href="/product" className="text-sm font-semibold text-blue-600 hover:text-blue-700 flex items-center group">
+              Xem thêm <ArrowRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+            {products.map((product) => (
+              <Link key={product.id} href={`/product/${product.id}`} className="group block">
+                <Card className="h-full overflow-hidden border-slate-200 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-white">
+                  <div className="aspect-square bg-slate-100 relative overflow-hidden">
+                     <img 
+                        src={`https://placehold.co/400x400/f1f5f9/64748b?text=${product.name.replace(/ /g, '+')}`} 
+                        alt={product.name}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                     />
+                     {product.id <= 2 && (
+                       <span className="absolute top-3 left-3 bg-red-500 text-white text-xs font-black px-2.5 py-1 rounded-md shadow-sm tracking-wider">
+                         MỚI
+                       </span>
+                     )}
+                  </div>
+                  
+                  <CardContent className="p-5 flex flex-col gap-2">
+                    <h3 className="font-bold text-slate-800 truncate text-base" title={product.name}>
+                      {product.name}
+                    </h3>
+                    
+                    <div className="flex items-center gap-1.5">
+                      <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                      <span className="text-sm font-bold text-slate-700">{product.rating}</span>
+                      <span className="text-xs font-medium text-slate-400">({product.reviews})</span>
+                    </div>
+                    
+                    <div className="mt-3 flex items-center justify-between">
+                      <span className="text-lg font-black text-slate-900">{product.price}</span>
+                      <Button size="icon" variant="secondary" className="rounded-full bg-slate-100 hover:bg-slate-900 text-slate-700 hover:text-white transition-colors shadow-sm">
+                        <ShoppingCart className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        </div>
+
       </main>
     </div>
   );
