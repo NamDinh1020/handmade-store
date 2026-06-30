@@ -1,21 +1,15 @@
 import React from "react";
-import { Search, ChevronLeft, ChevronRight, Star, ShoppingCart, ArrowRight, Bell, User } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, Star, ArrowRight, Bell } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { prisma } from "@/lib/prisma";
+import UserMenu from "@/components/user-menu";
+import HeaderCartIcon from "@/components/header-cart-icon";
+import AddToCartIcon from "@/components/add-to-cart-icon";
 
-// Chú ý: Đây là component giả lập để mã có thể chạy trên môi trường xem trước (preview) này.
-// Khi sao chép vào dự án Next.js trên máy của bạn, hãy xóa dòng định nghĩa Link bên dưới 
-// và thêm lại dòng: import Link from "next/link"; lên trên cùng nhé.
-const Link = ({ href, children, className, ...props }: any) => {
-  return (
-    <a href={href} className={className} {...props}>
-      {children}
-    </a>
-  );
-};
-
-export default function Home() {
+export default async function Home() {
   const categories = [
     { name: "Keycap SA", color: "bg-blue-100 text-blue-600" },
     { name: "Keycap Cherry", color: "bg-red-100 text-red-600" },
@@ -25,16 +19,10 @@ export default function Home() {
     { name: "Keycap Custom", color: "bg-slate-200 text-slate-800" },
   ];
 
-  const products = [
-    { id: 1, name: "Keycap GMK Olivia", price: "2,500,000đ", rating: 4.8, reviews: 156 },
-    { id: 2, name: "Keycap PBT Chalk", price: "850,000đ", rating: 4.5, reviews: 89 },
-    { id: 3, name: "Keycap SA Bliss", price: "1,200,000đ", rating: 4.9, reviews: 210 },
-    { id: 4, name: "Keycap Cherry Blossom", price: "950,000đ", rating: 4.7, reviews: 134 },
-    { id: 5, name: "Keycap Artisan Dragon", price: "450,000đ", rating: 4.2, reviews: 45 },
-    { id: 6, name: "Keycap GMK Striker", price: "2,800,000đ", rating: 5.0, reviews: 320 },
-    { id: 7, name: "Keycap KAT Milkshake", price: "1,100,000đ", rating: 4.6, reviews: 112 },
-    { id: 8, name: "Keycap XDA Canvas", price: "750,000đ", rating: 4.4, reviews: 76 },
-  ];
+  const products = await prisma.product.findMany({
+    take: 8,
+    orderBy: { createdAt: "desc" },
+  });
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans pb-12">
@@ -48,10 +36,7 @@ export default function Home() {
           </Link>
 
           <div className="flex items-center gap-4 sm:gap-6">
-            <Link href="/cart" className="relative p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-full transition-all">
-              <ShoppingCart className="w-6 h-6" />
-              <span className="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white shadow-sm">3</span>
-            </Link>
+            <HeaderCartIcon />
 
             <button className="relative p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-full transition-all">
               <Bell className="w-6 h-6" />
@@ -60,15 +45,7 @@ export default function Home() {
 
             <div className="h-8 w-px bg-slate-200 hidden sm:block mx-1"></div>
 
-            <Link href="/account" className="flex items-center gap-3 p-1.5 hover:bg-slate-100 rounded-2xl transition-all border border-transparent hover:border-slate-200 cursor-pointer">
-              <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 border border-slate-200 shadow-inner">
-                <User className="w-5 h-5" />
-              </div>
-              <div className="hidden sm:block pr-3">
-                <div className="text-sm font-bold text-slate-900 leading-none mb-1">Nguyễn Văn A</div>
-                <div className="text-xs text-slate-500 leading-none">Tài khoản</div>
-              </div>
-            </Link>
+            <UserMenu />
           </div>
         </div>
       </header>
@@ -101,19 +78,11 @@ export default function Home() {
           <Button variant="outline" size="icon" className="absolute right-6 rounded-full bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity">
             <ChevronRight className="w-6 h-6" />
           </Button>
-
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3">
-            <div className="w-8 h-2 rounded-full bg-white shadow-sm"></div>
-            <div className="w-2 h-2 rounded-full bg-white/40 cursor-pointer hover:bg-white/70 transition-colors"></div>
-            <div className="w-2 h-2 rounded-full bg-white/40 cursor-pointer hover:bg-white/70 transition-colors"></div>
-            <div className="w-2 h-2 rounded-full bg-white/40 cursor-pointer hover:bg-white/70 transition-colors"></div>
-            <div className="w-2 h-2 rounded-full bg-white/40 cursor-pointer hover:bg-white/70 transition-colors"></div>
-          </div>
         </div>
 
         <div>
           <div className="flex items-end justify-between mb-6">
-            <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Sản Phẩm Yêu Thích</h2>
+            <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Danh Mục Sản Phẩm</h2>
             <Link href="/product" className="text-sm font-semibold text-blue-600 hover:text-blue-700 flex items-center group">
               Xem thêm <ArrowRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" />
             </Link>
@@ -142,7 +111,7 @@ export default function Home() {
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-            {products.map((product) => (
+            {products.map((product, index) => (
               <Link key={product.id} href={`/product/${product.id}`} className="group block">
                 <Card className="h-full overflow-hidden border-slate-200 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-white">
                   <div className="aspect-square bg-slate-100 relative overflow-hidden">
@@ -151,7 +120,7 @@ export default function Home() {
                         alt={product.name}
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                      />
-                     {product.id <= 2 && (
+                     {index < 2 && (
                        <span className="absolute top-3 left-3 bg-red-500 text-white text-xs font-black px-2.5 py-1 rounded-md shadow-sm tracking-wider">
                          MỚI
                        </span>
@@ -165,15 +134,15 @@ export default function Home() {
                     
                     <div className="flex items-center gap-1.5">
                       <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                      <span className="text-sm font-bold text-slate-700">{product.rating}</span>
-                      <span className="text-xs font-medium text-slate-400">({product.reviews})</span>
+                      <span className="text-sm font-bold text-slate-700">5.0</span>
+                      <span className="text-xs font-medium text-slate-400">(0)</span>
                     </div>
                     
                     <div className="mt-3 flex items-center justify-between">
-                      <span className="text-lg font-black text-slate-900">{product.price}</span>
-                      <Button size="icon" variant="secondary" className="rounded-full bg-slate-100 hover:bg-slate-900 text-slate-700 hover:text-white transition-colors shadow-sm">
-                        <ShoppingCart className="w-4 h-4" />
-                      </Button>
+                      <span className="text-lg font-black text-slate-900">
+                        {product.price.toLocaleString("vi-VN")}đ
+                      </span>
+                      <AddToCartIcon productId={product.id} />
                     </div>
                   </CardContent>
                 </Card>
@@ -181,7 +150,6 @@ export default function Home() {
             ))}
           </div>
         </div>
-
       </main>
     </div>
   );

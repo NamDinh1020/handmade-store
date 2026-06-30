@@ -1,11 +1,9 @@
-import NextAuth from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import bcrypt from "bcrypt";
 
-const prisma = new PrismaClient();
-
-const handler = NextAuth({
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -50,13 +48,13 @@ const handler = NextAuth({
     strategy: "jwt",
   },
   pages: {
-    signIn: "/auth/login", // Trỏ về trang đăng nhập mà chúng ta đã thiết kế
+    signIn: "/auth/login",
   },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.role = user.role; // Lưu role (USER/ADMIN) vào token
+        token.role = user.role;
       }
       return token;
     },
@@ -68,6 +66,8 @@ const handler = NextAuth({
       return session;
     }
   }
-});
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

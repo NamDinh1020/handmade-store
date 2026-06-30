@@ -1,66 +1,118 @@
-import React from "react";
+"use client";
+
+import { useState } from "react";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
-
-const Link = ({ href, children, className, ...props }: any) => {
-  return (
-    <a href={href} className={className} {...props}>
-      {children}
-    </a>
-  );
-};
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function LoginPage() {
-  return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 font-sans">
-      <Card className="w-full max-w-[420px] rounded-3xl shadow-xl border-slate-200 bg-white overflow-hidden">
-        <CardContent className="p-8 sm:p-10 flex flex-col items-center">
-          
-          <Link href="/" className="flex items-center gap-4 group mb-8">
-            <div className="w-14 h-14 border-2 border-slate-900 flex items-center justify-center font-bold text-slate-900 group-hover:bg-slate-900 group-hover:text-white transition-all duration-300 rounded-xl text-sm">
-              LOGO
-            </div>
-          </Link>
-          
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-8">
-            Đăng Nhập
-          </h1>
+  const router = useRouter();
+  
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-          <div className="w-full space-y-5">
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const res = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (res?.error) {
+        setError("Email hoặc mật khẩu không chính xác.");
+      } else {
+        router.push("/");
+        router.refresh();
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Đã có lỗi xảy ra. Vui lòng thử lại sau.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="flex items-center justify-center min-h-[80vh]">
+      <Card className="w-[400px]">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-center">Đăng nhập</CardTitle>
+          <CardDescription className="text-center">
+            Chào mừng trở lại! Vui lòng nhập thông tin của bạn.
+          </CardDescription>
+        </CardHeader>
+        <form onSubmit={handleSubmit}>
+          <CardContent className="space-y-4">
+            {error && (
+              <div className="p-3 text-sm font-medium text-red-500 bg-red-50 rounded-md">
+                {error}
+              </div>
+            )}
+            
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-900">Email</label>
-              <Input 
-                type="email" 
-                placeholder="example@email.com" 
-                className="h-12 rounded-xl border-slate-200 focus-visible:ring-slate-300 shadow-sm" 
+              <label 
+                htmlFor="email" 
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Email
+              </label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="m@example.com"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={isLoading}
               />
             </div>
             
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-900">Mật khẩu</label>
-              <Input 
-                type="password" 
-                placeholder="••••••••" 
-                className="h-12 rounded-xl border-slate-200 focus-visible:ring-slate-300 shadow-sm" 
+              <label 
+                htmlFor="password"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Mật khẩu
+              </label>
+              <Input
+                id="password"
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={isLoading}
               />
             </div>
-
-            <div className="pt-2">
-              <Button className="w-full h-12 bg-slate-900 hover:bg-slate-800 text-white font-bold text-base rounded-xl transition-all shadow-md">
-                Đăng Nhập
-              </Button>
+          </CardContent>
+          <CardFooter className="flex flex-col space-y-4">
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? "Đang xử lý..." : "Đăng nhập"}
+            </Button>
+            <div className="text-sm text-center text-gray-500">
+              Chưa có tài khoản?{" "}
+              <Link href="/auth/register" className="text-blue-600 hover:underline">
+                Đăng ký ngay
+              </Link>
             </div>
-          </div>
-
-          <div className="mt-8 text-center text-sm font-medium text-slate-600">
-            Chưa có tài khoản?{" "}
-            <Link href="/auth/register" className="text-blue-600 hover:text-blue-700 hover:underline">
-              Đăng ký ngay
-            </Link>
-          </div>
-          
-        </CardContent>
+          </CardFooter>
+        </form>
       </Card>
     </div>
   );
