@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Star, Package, Clock, ShieldCheck, ChevronRight, Bell } from "lucide-react";
 import Link from "next/link";
 import UserMenu from "@/components/user-menu";
-import HeaderCartIcon from "@/components/header-cart-icon";
-import AddToCartButton from "@/components/add-to-cart-button";
+import HeaderCartIcon from "@/components/cart/header-cart-icon";
+import AddToCartButton from "@/components/cart/add-to-cart-button";
 
 export default async function ProductDetailPage({
   params,

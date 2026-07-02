@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import UserMenu from "@/components/user-menu";
-import HeaderCartIcon from "@/components/header-cart-icon";
-import AddToCartIcon from "@/components/add-to-cart-icon";
+import HeaderCartIcon from "@/components/cart/header-cart-icon";
+import AddToCartIcon from "@/components/cart/add-to-cart-icon";
 
 export default async function Home() {
   const categories = [

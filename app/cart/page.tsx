@@ -207,7 +207,10 @@ export default function CartPage() {
                   <p className="text-xs text-slate-500 text-right mt-1">(Đã bao gồm VAT nếu có)</p>
                 </div>
 
-                <Button className="w-full h-14 text-base font-bold rounded-2xl bg-slate-900 hover:bg-slate-800 shadow-md">
+                <Button 
+                  onClick={() => router.push("/checkout")}
+                  className="w-full h-14 text-base font-bold rounded-2xl bg-slate-900 hover:bg-slate-800 shadow-md"
+                >
                   Tiến hành Thanh toán
                 </Button>
               </div>
